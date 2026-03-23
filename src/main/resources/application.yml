@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: user-aggregator
+
+app:
+  hikari:
+    maximum-pool-size: 2
+    minimum-idle: 0
+    initialization-fail-timeout: -1
+    connection-timeout: 3000
+    validation-timeout: 1000
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+logging:
+  level:
+    io.parser.useraggregator: INFO
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+data-sources:
+  - name: postgres-users
+    strategy: postgres
+    url: ${POSTGRES_SOURCE_URL:jdbc:postgresql://localhost:5432/users_db}
+    table: public.app_users
+    user: ${POSTGRES_SOURCE_USER:postgres}
+    password: ${POSTGRES_SOURCE_PASSWORD:postgres}
+    mapping:
+      id: external_id
+      username: login
+      name: first_name
+      surname: last_name
+  - name: mysql-users
+    strategy: mysql
+    url: ${MYSQL_SOURCE_URL:jdbc:mysql://localhost:3306/users_db}
+    table: legacy_users
+    user: ${MYSQL_SOURCE_USER:mysql}
+    password: ${MYSQL_SOURCE_PASSWORD:mysql}
+    mapping:
+      id: user_identifier
+      username: user_name
+      name: given_name
+      surname: family_name
